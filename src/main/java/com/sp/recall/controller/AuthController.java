@@ -18,7 +18,6 @@ import com.sp.recall.repository.UserRepository;
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    // Dependency Injection
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -31,7 +30,6 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
     
-    // Registration mapping
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
         String username = body.get("username");
