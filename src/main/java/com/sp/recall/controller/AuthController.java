@@ -1,71 +1,37 @@
 package com.sp.recall.controller;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import com.sp.recall.model.User;
-import com.sp.recall.security.JwtUtil;
+import com.sp.recall.dto.*;
+import com.sp.recall.service.AuthService;
 
+import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.sp.recall.repository.UserRepository;
 
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final AuthService authService;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
     
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
-        String username = body.get("username");
-        String password = body.get("password");
+    public ResponseEntity<MessageResponse> register(@Valid @RequestBody AuthRequest request) {
+        authService.register(request);
 
-        if(userRepository.findByUsername(username).isPresent()){
-            return ResponseEntity.badRequest().body("Username already taken");
-        }
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.status(201).body(new MessageResponse("User registered successfully"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body, HttpServletResponse response) {
-        String username = body.get("username");
-        String password = body.get("password");
-
-        try {
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Invalid credential");
-        }
-
-        String token = jwtUtil.generateToken((username));
+    public ResponseEntity<MessageResponse> login(@Valid @RequestBody AuthRequest request, HttpServletResponse response) {
+        
+        String token = authService.login(request);
 
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
@@ -77,34 +43,31 @@ public class AuthController {
 
         response.addHeader("Set-Cookie", cookie.toString());
 
-        return ResponseEntity.ok("Login successful");
+        return ResponseEntity.ok(new MessageResponse("Login successful"));
     }
 
 
     @GetMapping("/me")
-    public ResponseEntity<?> me() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            return ResponseEntity.status(401).body("Not authenticated");
-        }
-
-        return ResponseEntity.ok(Map.of("username", auth.getName()));
+    public ResponseEntity<UserResponse> me() {
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<MessageResponse> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
-                .secure(false) // true in production (HTTPS)
+                .secure(false) 
                 .path("/")
-                .maxAge(0) // expires immediately
+                .maxAge(0) 
                 .sameSite("Lax")
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
-        return ResponseEntity.ok("Logged out");
+
+        authService.logout();
+
+        return ResponseEntity.ok(new MessageResponse("Logged out"));
     }
     
 }
