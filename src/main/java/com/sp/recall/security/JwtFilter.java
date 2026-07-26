@@ -26,19 +26,24 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        String token = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-
-            if(jwtUtil.isTokenValid(token)) {
-                String username = jwtUtil.extractUsername(token);
-                var userDetails = userDetailsService.loadUserByUsername(username);
-
-                var auth = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(auth);
+        if(request.getCookies() != null) {
+            for (Cookie cookie: request.getCookies()) {
+                if(cookie.getName().equals("jwt")) {
+                    token = cookie.getValue();
+                }
             }
+        }
+        
+        if(token != null && jwtUtil.isTokenValid(token)) {
+            String username = jwtUtil.extractUsername(token);
+            var userDetails = userDetailsService.loadUserByUsername(username);
+
+            var auth = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
         chain.doFilter(request, response);
