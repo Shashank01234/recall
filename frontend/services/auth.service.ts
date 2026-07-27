@@ -27,3 +27,13 @@ export async function register(username: string, password: string) {
     }),
   });
 }
+
+export async function logout() {
+  const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+  return fetch(`${API_URL}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+}
