@@ -7,6 +7,7 @@ import Input from "@/components/common/Input";
 
 import AuthFooter from "./AuthFooter";
 import { useLogin } from "@/hooks/useLogin";
+import Image from "next/image";
 
 export default function LoginForm() {
 
@@ -87,6 +88,12 @@ export default function LoginForm() {
           variant="secondary"
           className="w-full"
         >
+          <Image
+            src="/google.svg"
+            alt="Google"
+            width={20}
+            height={20}
+          />
           Continue with Google
         </Button>
 
