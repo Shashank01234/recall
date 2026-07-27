@@ -1,20 +1,18 @@
 export default function AuthSidePanel() {
   return (
-    <div className="hidden lg:flex bg-gradient-to-br from-sky-100 to-cyan-50 items-center justify-center">
+    <div className="hidden lg:flex items-center justify-center bg-gradient-to-br from-sky-100 to-cyan-50 dark:from-slate-900 dark:to-slate-800">
 
-      <div className="text-center space-y-8">
+      <div className="text-center space-y-6">
 
         <div className="text-6xl">📚</div>
 
-        <div>
-          <h1 className="text-4xl font-bold">
-            Recall
-          </h1>
+        <h1 className="text-5xl font-bold text-slate-900 dark:text-white">
+          Recall
+        </h1>
 
-          <p className="mt-4 text-gray-600 text-lg">
-            Smart spaced repetition for developers.
-          </p>
-        </div>
+        <p className="text-lg text-gray-600 dark:text-gray-300">
+          Memory, engineered.
+        </p>
 
       </div>
 

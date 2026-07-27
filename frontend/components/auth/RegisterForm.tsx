@@ -6,6 +6,7 @@ import Input from "@/components/common/Input";
 
 import AuthFooter from "./AuthFooter";
 import { useRegister } from "@/hooks/useRegister";
+import Divider from "../common/Divider";
 
 export default function RegisterForm() {
   const {
@@ -19,17 +20,17 @@ export default function RegisterForm() {
   } = useRegister();
 
   return (
-    <Card className="w-full max-w-lg shadow-none">
+    <Card className="w-full max-w-lg">
 
       <div className="space-y-8">
 
         <div className="space-y-2">
 
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
             Create Account
           </h1>
 
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Create your account to get started.
           </p>
 
@@ -74,7 +75,7 @@ export default function RegisterForm() {
           </Button>
 
         </form>
-
+        
         <AuthFooter
           text="Already have an account?"
           linkText="Sign In"

@@ -29,7 +29,7 @@ export default function Input({
     <div className="mb-5 w-full">
       <label
         htmlFor={id}
-        className="mb-2 block text-sm font-medium text-gray-700"
+        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-400"
       >
         {label}
       </label>

@@ -21,17 +21,17 @@ export default function LoginForm() {
   } = useLogin();
 
   return (
-    <Card className="w-full max-w-md shadow-none">
+    <Card className="w-full max-w-md">
 
       <div className="space-y-8">
 
         <div className="space-y-2">
 
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
             Welcome Back
           </h1>
 
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Sign in to continue.
           </p>
 
@@ -90,10 +90,10 @@ export default function LoginForm() {
           Continue with Google
         </Button>
 
-        <AuthFooter 
-            text="Don't have an account?" 
-            linkText="Register" 
-            href="/register"
+        <AuthFooter
+          text="Don't have an account?"
+          linkText="Register"
+          href="/register"
         />
 
       </div>

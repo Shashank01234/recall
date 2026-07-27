@@ -15,10 +15,14 @@ export default function Card({
         w-full
         rounded-3xl
         bg-white
-        shadow-xl
+        dark:bg-slate-900
         border
-        border-gray-100
+        border-gray-200
+        dark:border-slate-700
+        shadow-xl
+        transition-colors
         p-8
+        
         ${className}
       `}
     >

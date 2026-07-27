@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import Card from "@/components/common/Card";
 import AuthSidePanel from "./AuthSidePanel";
+import ThemeToggle from "@/components/common/ThemeToggle";
 
 type Props = {
   children: ReactNode;
@@ -8,15 +8,31 @@ type Props = {
 
 export default function AuthLayout({ children }: Props) {
   return (
-    <main className="min-h-screen bg-slate-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-7xl h-[700px] rounded-3xl bg-white shadow-2xl overflow-hidden grid grid-cols-2">
+    <main className="relative flex min-h-screen items-center justify-center bg-slate-100 dark:bg-slate-950 p-8 transition-colors">
 
-        <Card className="rounded-none shadow-none flex items-center justify-center p-12">
+      <div className="absolute top-6 right-6">
+        <ThemeToggle />
+      </div>
+
+      <div
+        className="
+          grid
+          w-full
+          max-w-7xl
+          overflow-hidden
+          rounded-3xl
+          bg-white
+          dark:bg-slate-900
+          shadow-2xl
+          transition-colors
+          lg:grid-cols-2
+        "
+      >
+        <div className="flex items-center justify-center p-12">
           {children}
-        </Card>
+        </div>
 
         <AuthSidePanel />
-
       </div>
     </main>
   );
