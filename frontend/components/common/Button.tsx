@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
+import Spinner from "./Spinner";
 
 type ButtonVariant = "primary" | "secondary" | "danger";
 
@@ -16,17 +17,18 @@ export default function Button({
   loading = false,
   className = "",
   disabled,
+  type = "button",
   ...props
 }: ButtonProps) {
   const baseStyle =
-    "rounded-lg px-4 py-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ease-in-out hover:-translate-y-1 hover:scale-110";
+    "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-all duration-200 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50";
 
   const variants = {
     primary:
-      "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98] hover:bg-indigo-500",
+      "bg-blue-600 text-white hover:bg-blue-700",
 
     secondary:
-      "bg-gray-200 text-gray-800 hover:bg-gray-300",
+      "border border-gray-300 bg-white text-slate-900 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800",
 
     danger:
       "bg-red-600 text-white hover:bg-red-700",
@@ -35,6 +37,7 @@ export default function Button({
   return (
     <button
       {...props}
+      type={type}
       disabled={disabled || loading}
       className={`
         ${baseStyle}
@@ -43,7 +46,9 @@ export default function Button({
         ${className}
       `}
     >
-      {loading ? "Loading..." : children}
+      {loading && <Spinner size={18} />}
+
+      {children}
     </button>
   );
 }
