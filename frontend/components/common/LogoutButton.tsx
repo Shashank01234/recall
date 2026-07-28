@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
-import Button from "./Button";
 import { logout } from "@/services/auth.service";
+import Spinner from "./Spinner";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -26,15 +26,18 @@ export default function LogoutButton() {
   }
 
   return (
-    <Button
-      variant="secondary"
+    <button
       onClick={handleLogout}
       disabled={loading}
-      className="flex items-center gap-2"
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-red-500 transition hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50"
     >
-      <LogOut size={18} />
+      {loading ? (
+        <Spinner size={18} />
+      ) : (
+        <LogOut size={18} />
+      )}
 
-      {loading ? "Logging out..." : "Logout"}
-    </Button>
+      <span>Logout</span>
+    </button>
   );
 }
