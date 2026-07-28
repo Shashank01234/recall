@@ -15,17 +15,30 @@ export async function login(username: string, password: string) {
   });
 }
 
-export async function register(username: string, password: string) {
-  return fetch(`${API_URL}/api/auth/register`, {
+export async function register(data: {
+  name: string,
+  username: string,
+  email: string,
+  phoneNumber: string,
+  password: string,
+  confirmPassword: string
+}) {
+
+  const response = await fetch(`${API_URL}/api/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      username,
-      password,
-    }),
+    body: JSON.stringify(data),
   });
+
+  const responseData = await response.json();
+
+  return{
+    ok: response.ok,
+    status: response.status,
+    data: responseData,
+  };
 }
 
 export async function logout() {

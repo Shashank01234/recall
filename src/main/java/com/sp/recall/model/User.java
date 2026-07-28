@@ -83,8 +83,20 @@ public class User {
         createdAt = now;
         updatedAt = now;
 
+        if(provider == null){
+            provider = AuthProvider.LOCAL;
+        }
+
         if(role == null) {
             role = Role.USER;
+        }
+
+        if(emailVerified == null) {
+            emailVerified = false;
+        }
+
+        if(phoneVerified == null) {
+            phoneVerified = false;
         }
     }
 

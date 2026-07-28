@@ -9,7 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sp.recall.dto.AuthRequest;
+import com.sp.recall.dto.RegisterRequest;
 import com.sp.recall.dto.UserResponse;
+import com.sp.recall.exception.BadRequestException;
+import com.sp.recall.model.AuthProvider;
+import com.sp.recall.model.Role;
 import com.sp.recall.model.User;
 import com.sp.recall.repository.UserRepository;
 import com.sp.recall.security.JwtUtil;
@@ -21,28 +25,55 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
-    public void register(AuthRequest request) {
-        if(userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exist");
+    public void register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new BadRequestException("Username already exist");
         }
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already registered");
+        }
+
+        if (request.getPhoneNumber() != null &&
+                !request.getPhoneNumber().isBlank() &&
+                userRepository.existsByPhoneNumber(request.getPhoneNumber().trim())) {
+
+            throw new BadRequestException("Phone number already registered");
+        }
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BadRequestException("Passwords do not match");
+        }
+
+        User user = User.builder()
+                .name(request.getName().trim())
+                .username(request.getUsername().trim())
+                .email(request.getEmail().trim().toLowerCase())
+                .phoneNumber(
+                        request.getPhoneNumber() == null || request.getPhoneNumber().isBlank()
+                                ? null
+                                : request.getPhoneNumber().trim())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .provider(AuthProvider.LOCAL)
+                .role(Role.USER)
+                .emailVerified(false)
+                .phoneVerified(false)
+                .build();
+
         userRepository.save(user);
     }
 
     public String login(AuthRequest request) throws AuthenticationException {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
         return jwtUtil.generateToken((request.getUsername()));
     }
@@ -50,7 +81,8 @@ public class AuthService {
     public UserResponse getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
             throw new RuntimeException("User is not authenticated");
         }
 
