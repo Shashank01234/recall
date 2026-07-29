@@ -50,3 +50,21 @@ export async function logout() {
     credentials: "include",
   });
 }
+
+export async function googleLogin(
+  idToken: string
+) {
+  return fetch(`${API_URL}/api/auth/google`, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+
+    body: JSON.stringify({
+      idToken,
+    }),
+  });
+}

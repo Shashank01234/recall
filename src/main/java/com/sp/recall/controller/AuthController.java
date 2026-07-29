@@ -1,10 +1,14 @@
 package com.sp.recall.controller;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.sp.recall.dto.*;
+
+import com.sp.recall.dto.auth.*;
 import com.sp.recall.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -68,6 +72,23 @@ public class AuthController {
         authService.logout();
 
         return ResponseEntity.ok(new MessageResponse("Logged out"));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<MessageResponse> googleLogin(@RequestBody GoogleLoginRequest request, HttpServletResponse response) throws GeneralSecurityException, IOException {
+        String jwt = authService.googleLogin(request.getIdToken());
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(86400)
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+        
+        return ResponseEntity.ok(new MessageResponse("Google login successful"));
     }
     
 }

@@ -8,6 +8,7 @@ import Input from "@/components/common/Input";
 import AuthFooter from "./AuthFooter";
 import { useLogin } from "@/hooks/useLogin";
 import Image from "next/image";
+import GoogleSignIn from "./GoogleSignIn";
 
 export default function LoginForm() {
 
@@ -84,7 +85,7 @@ export default function LoginForm() {
 
         <Divider text="OR" />
 
-        <Button
+        {/* <Button
           variant="secondary"
           className="w-full"
         >
@@ -95,7 +96,9 @@ export default function LoginForm() {
             height={20}
           />
           Continue with Google
-        </Button>
+        </Button> */}
+
+        <GoogleSignIn />
 
         <AuthFooter
           text="Don't have an account?"

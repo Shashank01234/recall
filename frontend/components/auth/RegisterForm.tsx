@@ -8,6 +8,7 @@ import AuthFooter from "./AuthFooter";
 import { useRegister } from "@/hooks/useRegister";
 import Divider from "../common/Divider";
 import Image from "next/image";
+import GoogleSignIn from "./GoogleSignIn";
 
 export default function RegisterForm() {
   const {
@@ -122,7 +123,7 @@ export default function RegisterForm() {
 
       <Divider text="OR" />
 
-      <Button
+      {/* <Button
         variant="secondary"
         className="w-full"
       >
@@ -133,7 +134,9 @@ export default function RegisterForm() {
           height={20}
         />
         Continue with Google
-      </Button>
+      </Button> */}
+
+      <GoogleSignIn />
 
       <AuthFooter
         text="Already have an account?"

@@ -1,4 +1,4 @@
-package com.sp.recall.dto;
+package com.sp.recall.dto.auth;
 
 import lombok.*;
 import jakarta.validation.constraints.NotBlank;
