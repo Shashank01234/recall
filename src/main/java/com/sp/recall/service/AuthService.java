@@ -1,5 +1,7 @@
 package com.sp.recall.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -73,9 +75,24 @@ public class AuthService {
 
     public String login(AuthRequest request) throws AuthenticationException {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            new UsernamePasswordAuthenticationToken(
+                request.getIdentifier(), 
+                request.getPassword()
+            )
+        );
 
-        return jwtUtil.generateToken((request.getUsername()));
+        User user = userRepository
+            .findByUsernameOrEmail(
+                request.getIdentifier(), 
+                request.getIdentifier()
+            )
+            .orElseThrow();
+
+        user.setLastLogin(LocalDateTime.now());
+
+        userRepository.save(user);
+
+        return jwtUtil.generateToken((user.getUsername()));
     }
 
     public UserResponse getCurrentUser() {

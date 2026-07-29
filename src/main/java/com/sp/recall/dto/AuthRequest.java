@@ -5,11 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class AuthRequest {
     
-    @NotBlank(message = "Username is required")
-    private String username;
+    @NotBlank(message = "Username or Email is required")
+    private String identifier;
 
     @NotBlank(message = "Password is required")
     private String password;

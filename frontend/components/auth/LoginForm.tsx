@@ -12,9 +12,9 @@ import Image from "next/image";
 export default function LoginForm() {
 
   const {
-    username,
+    identifier,
     password,
-    setUsername,
+    setIdentifier,
     setPassword,
     loading,
     error,
@@ -44,12 +44,12 @@ export default function LoginForm() {
         >
 
           <Input
-            label="Username"
-            id="username"
+            label="Username or Email"
+            id="identifier"
             type="text"
-            value={username}
+            value={identifier}
             onChange={(e) =>
-              setUsername(e.target.value)
+              setIdentifier(e.target.value)
             }
             required
           />

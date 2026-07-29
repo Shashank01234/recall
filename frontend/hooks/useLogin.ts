@@ -7,7 +7,7 @@ import { login } from "@/services/auth.service";
 export function useLogin() {
   const router = useRouter();
 
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -21,10 +21,10 @@ export function useLogin() {
     setError("");
 
     try {
-      const res = await login(username, password);
+      const res = await login(identifier, password);
 
       if (!res.ok) {
-        setError("Invalid username or password");
+        setError("Invalid username/email or password");
         return;
       }
 
@@ -38,9 +38,9 @@ export function useLogin() {
   }
 
   return {
-    username,
+    identifier,
     password,
-    setUsername,
+    setIdentifier,
     setPassword,
     loading,
     error,

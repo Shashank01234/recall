@@ -1,7 +1,7 @@
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-export async function login(username: string, password: string) {
+export async function login(identifier: string, password: string) {
   return fetch(`${API_URL}/api/auth/login`, {
     method: "POST",
     headers: {
@@ -9,7 +9,7 @@ export async function login(username: string, password: string) {
     },
     credentials: "include",
     body: JSON.stringify({
-      username,
+      identifier,
       password,
     }),
   });
