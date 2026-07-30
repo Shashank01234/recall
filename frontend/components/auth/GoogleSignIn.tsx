@@ -19,7 +19,9 @@ export default function GoogleSignIn() {
     const res = await googleLogin(response.credential);
 
     if (!res.ok) {
-      alert("Google login failed");
+      const text = await res.text();
+      console.error(text);
+      alert(text);
       return;
     }
 

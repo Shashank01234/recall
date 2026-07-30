@@ -125,11 +125,7 @@ public class AuthService {
                         .findByEmail(googleUser.getEmail())
                         .orElseGet(() -> createGoogleUser(googleUser));
         
-        user.setLastLogin(LocalDateTime.now());
-
-        if(googleUser.getPicture() != null) {
-            user.setProfileImage(googleUser.getPicture());
-        }
+        syncGoogleProfile(user, googleUser);
 
         userRepository.save(user);
 
@@ -168,5 +164,21 @@ public class AuthService {
         }
 
         return username;
+    }
+
+    private void syncGoogleProfile(User user, GoogleUserInfo googleUser) {
+        user.setLastLogin(LocalDateTime.now());
+
+        if(googleUser.isEmailVerified()) {
+            user.setEmailVerified(true);
+        }
+
+        if(googleUser.getName() != null && !googleUser.getName().isBlank()) {
+            user.setName(googleUser.getName());
+        }
+
+        if(googleUser.getPicture() != null && !googleUser.getPicture().isBlank()) {
+            user.setProfileImage((googleUser.getPicture()));
+        }
     }
 }

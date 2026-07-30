@@ -7,24 +7,22 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import com.sp.recall.dto.auth.*;
 import com.sp.recall.service.AuthService;
 
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    
+
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
@@ -33,8 +31,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MessageResponse> login(@Valid @RequestBody AuthRequest request, HttpServletResponse response) {
-        
+    public ResponseEntity<MessageResponse> login(@Valid @RequestBody AuthRequest request,
+            HttpServletResponse response) {
+
         String token = authService.login(request);
 
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
@@ -50,20 +49,18 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("Login successful"));
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me() {
         return ResponseEntity.ok(authService.getCurrentUser());
     }
 
-
     @PostMapping("/logout")
     public ResponseEntity<MessageResponse> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
-                .secure(false) 
+                .secure(false)
                 .path("/")
-                .maxAge(0) 
+                .maxAge(0)
                 .sameSite("Lax")
                 .build();
 
@@ -75,20 +72,32 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<MessageResponse> googleLogin(@RequestBody GoogleLoginRequest request, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        String jwt = authService.googleLogin(request.getIdToken());
+    public ResponseEntity<MessageResponse> googleLogin(
+            @RequestBody GoogleLoginRequest request,
+            HttpServletResponse response) {
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(86400)
-                .sameSite("Lax")
-                .build();
+        try {
+            String jwt = authService.googleLogin(request.getIdToken());
 
-        response.addHeader("Set-Cookie", cookie.toString());
-        
-        return ResponseEntity.ok(new MessageResponse("Google login successful"));
+            ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(86400)
+                    .sameSite("Lax")
+                    .build();
+
+            response.addHeader("Set-Cookie", cookie.toString());
+
+            return ResponseEntity.ok(
+                    new MessageResponse("Google login successful"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
-    
+
 }
