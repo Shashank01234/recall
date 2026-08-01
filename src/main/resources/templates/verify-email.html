@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <title>Verify Email</title>
+
+</head>
+
+<body style="
+font-family:Arial;
+background:#f8fafc;
+padding:40px;
+">
+
+    <div style="
+max-width:600px;
+margin:auto;
+background:white;
+padding:40px;
+border-radius:12px;
+">
+
+        <h2>
+
+            Hello
+            <span th:text="${name}"></span>
+
+            👋
+
+        </h2>
+
+        <p>
+
+            Welcome to Recall.
+
+            Please verify your email by clicking below.
+
+        </p>
+
+        <p>
+
+            <a th:href="${verificationLink}" style="
+background:#2563eb;
+color:white;
+padding:14px 28px;
+text-decoration:none;
+border-radius:8px;
+display:inline-block;
+">
+
+                Verify Email
+
+            </a>
+
+        </p>
+
+        <p>
+
+            This link expires in 24 hours.
+
+        </p>
+
+    </div>
+
+</body>
+
+</html>

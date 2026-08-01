@@ -1,8 +1,5 @@
 package com.sp.recall.controller;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
