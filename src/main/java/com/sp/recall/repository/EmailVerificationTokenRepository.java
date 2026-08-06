@@ -9,7 +9,7 @@ import com.sp.recall.model.User;
 
 public interface EmailVerificationTokenRepository extends JpaRepository<EmailVerificationToken, Long> {
     Optional<EmailVerificationToken> findByToken(String token);
-    Optional<EmailVerificationToken> findByUser(User user);
+    Optional<EmailVerificationToken> findByUserAndUsedFalse(User user);
 
     void deleteByUser(User user);
 }
