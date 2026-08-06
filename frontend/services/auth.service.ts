@@ -68,3 +68,21 @@ export async function googleLogin(
     }),
   });
 }
+
+export async function verifyEmail(token: string) {
+  return fetch(
+    `${API_URL}/api/email/verify?token=${encodeURIComponent(token)}`
+  );
+}
+
+export async function resendVerification(email: string) {
+  return fetch(`${API_URL}/api/email/resned`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+    }),
+  });
+}

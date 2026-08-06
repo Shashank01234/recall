@@ -39,7 +39,7 @@ export function useRegister() {
         return;
       }
 
-      router.replace("/login");
+      router.replace(`/check-email?email=${encodeURIComponent(email)}`);
     } catch {
       setError("Could not connect to the backend.");
     } finally {
